@@ -1,31 +1,30 @@
 import re
-book = open('book.txt', 'r')
-
-dictionary={}
-
-booklist = []
-
-with open('book.txt','r') as f:
-    for line in f:
-        for word in line.split():
-           booklist.append(word.lower())
-
-print len(booklist)
-
-for i in range(len(booklist)):
-	if booklist[i].isalpha() and booklist[i+1].isalpha() and i < len(booklist)-2:
-		workingstring = booklist[i] +" "+ booklist[i+1]
-		#print workingstring
-		if workingstring not in dictionary:
-			dictionary[workingstring]=[re.sub(r'\W+', '',booklist[i+2])]
-		else:
-			dictionary[workingstring].append(re.sub(r'\W+', '',booklist[i+2]))
-
-words = dictionary
-
-
 import random
 import sys
+
+def read_file_words(file):
+    words = []
+
+    with open(file,'r') as f:
+        for line in f:
+            for word in line.split():
+               words.append(word.lower())
+
+    return words
+
+def process_dictionary(words):
+    dictionary = {}
+
+    for i in range(len(words)):
+    	if words[i].isalpha() and words[i+1].isalpha() and i < len(words) - 2:
+    		workingstring = words[i] + " " + words[i + 1]
+
+    		if workingstring not in dictionary:
+    			dictionary[workingstring] = [re.sub(r'\W+', '', words[i + 2])]
+    		else:
+    			dictionary[workingstring].append(re.sub(r'\W+', '', words[i + 2]))
+
+    return dictionary
 
 def count_syllables(word):
     vowels = ['a', 'e', 'i', 'o', 'u']
@@ -71,9 +70,8 @@ def count_syllables(word):
         maxsyl += 1
 
     return maxsyl
-    return minsyl, maxsyl
 
-
+words = process_dictionary(read_file_words("book.txt"))
 syllables = {word: count_syllables(word) for word in words.keys()}
 
 # print syllables
@@ -108,7 +106,7 @@ def generate_haiku(start_word):
     line3 = generate_line(random.choice(words.keys()), 5)
     return "%s\n%s\n%s" % (line1, line2, line3)
 
-start_word = raw_input("Start word\n")
+start_word = raw_input("Start word: ")
 
 if start_word == "":
     start_word = random.choice(words.keys())

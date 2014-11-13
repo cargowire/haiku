@@ -20,8 +20,6 @@ for i in range(len(booklist)):
 			dictionary[workingstring]=[re.sub(r'\W+', '',booklist[i+2])]
 		else:
 			dictionary[workingstring].append(re.sub(r'\W+', '',booklist[i+2]))
-		
-print dictionary
 
 words = dictionary
 
@@ -91,9 +89,10 @@ def generate_line(start_word, number_of_syllables):
     remaining_number_of_syllables = number_of_syllables - start_syllables
     line = start_word
     while remaining_number_of_syllables > 0:
-        possible_next_word = filter(lambda w : syllables.get(w, 9999) < remaining_number_of_syllables and syllables.get(w, 9999) != count_syllables(start_word) and not w == next_word, words[next_word])
+        possible_next_word = filter(lambda w : syllables.get(w, 9999) < remaining_number_of_syllables and syllables.get(w, 9999) != count_syllables(start_word) and not w == next_word, words.get(next_word, []))
         if len(possible_next_word) == 0:
-            possible_next_word = filter(lambda w : syllables.get(w, 9999) < remaining_number_of_syllables and not w == next_word, words[next_word])
+            possible_next_word = filter(lambda w : syllables.get(w, 9999) < remaining_number_of_syllables and not w == next_word, words.get(next_word, []))
+        
         # print next_word, possible_next_word
         if len(possible_next_word) == 0:
             next_word = random.choice(one_syllable_words)

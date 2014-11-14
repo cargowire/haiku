@@ -12,18 +12,21 @@ def read_file_words(file):
 
     return words
 
-def process_dictionary(words):
+def process_dictionary(words, keyWordSize=1):
     dictionary = {}
 
     for i in range(len(words)):
-    	if words[i].isalpha() and words[i+1].isalpha() and i < len(words) - 2:
-    		workingstring = words[i] + " " + words[i + 1]
+        if i < len(words) - keyWordSize and words[i].isalpha() and words[i + keyWordSize].isalpha():
+            workingstring = words[i]
 
-    		if workingstring not in dictionary:
-    			dictionary[workingstring] = [re.sub(r'\W+', '', words[i + 2])]
-    		else:
-    			dictionary[workingstring].append(re.sub(r'\W+', '', words[i + 2]))
+            for j in range(1, keyWordSize):
+                workingstring += " " + words[i + j]
 
+            if workingstring not in dictionary:
+                dictionary[workingstring] = [re.sub(r'\W+', '', words[i + keyWordSize])]
+            else:
+                dictionary[workingstring].append(re.sub(r'\W+', '', words[i + keyWordSize]))
+    
     return dictionary
 
 def count_syllables(word):
@@ -71,7 +74,7 @@ def count_syllables(word):
 
     return maxsyl
 
-words = process_dictionary(read_file_words("book.txt"))
+words = process_dictionary(read_file_words("book.txt"), 1)
 syllables = {word: count_syllables(word) for word in words.keys()}
 
 # print syllables
@@ -86,10 +89,13 @@ def generate_line(start_word, number_of_syllables):
     next_word = start_word
     remaining_number_of_syllables = number_of_syllables - start_syllables
     line = start_word
+    
     while remaining_number_of_syllables > 0:
-        possible_next_word = filter(lambda w : syllables.get(w, 9999) < remaining_number_of_syllables and syllables.get(w, 9999) != count_syllables(start_word) and not w == next_word, words.get(next_word, []))
+    
+        possible_next_word = filter(lambda w : syllables.get(w, 9999) <= remaining_number_of_syllables and syllables.get(w, 9999) != count_syllables(next_word) and not w == next_word, words.get(next_word, []))
+        
         if len(possible_next_word) == 0:
-            possible_next_word = filter(lambda w : syllables.get(w, 9999) < remaining_number_of_syllables and not w == next_word, words.get(next_word, []))
+            possible_next_word = filter(lambda w : syllables.get(w, 9999) <= remaining_number_of_syllables and not w == next_word, words.get(next_word, []))
         
         # print next_word, possible_next_word
         if len(possible_next_word) == 0:
@@ -98,6 +104,7 @@ def generate_line(start_word, number_of_syllables):
             next_word = random.choice(possible_next_word)
         line += " " + next_word
         remaining_number_of_syllables -= syllables[next_word]
+        
     return line
 
 def generate_haiku(start_word):

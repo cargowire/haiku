@@ -92,8 +92,10 @@ def generate_line(start_word, number_of_syllables):
     
     while remaining_number_of_syllables > 0:
     
+        # Try for different syllables (for variety)
         possible_next_word = filter(lambda w : syllables.get(w, 9999) <= remaining_number_of_syllables and syllables.get(w, 9999) != count_syllables(next_word) and not w == next_word, words.get(next_word, []))
         
+        # If no different syllables fall back to any match
         if len(possible_next_word) == 0:
             possible_next_word = filter(lambda w : syllables.get(w, 9999) <= remaining_number_of_syllables and not w == next_word, words.get(next_word, []))
         

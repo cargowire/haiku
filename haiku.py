@@ -110,15 +110,15 @@ def generate_line(start_word, number_of_syllables):
     return line
 
 def generate_haiku(start_word):
-    line1 = generate_line(start_word, 5)
-    line2 = generate_line(random.choice(words.keys()), 7)
-    line3 = generate_line(random.choice(words.keys()), 5)
-    return "%s\n%s\n%s" % (line1, line2, line3)
+    line1 = "\t" + generate_line(start_word, 5)
+    line2 = "\t" + generate_line(random.choice(words.keys()), 7)
+    line3 = "\t" + generate_line(random.choice(words.keys()), 5)
+    return "\n%s\n%s\n%s\n" % (line1, line2, line3)
 
 start_word = raw_input("Start word: ")
 
 if start_word == "":
     start_word = random.choice(words.keys())
 
-line = generate_haiku(start_word)
-print line
+haiku = generate_haiku(start_word)
+print haiku
